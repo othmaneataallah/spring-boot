@@ -25,6 +25,15 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+      - name: Resolve docs attributes
+        # The real {url-spring-grpc-docs} value is build-generated from the BOM
+        # (LinkedVersion = minor version), so derive it the same way here and
+        # feed it to the checker. Extend with more attributes as needed.
+        run: |
+          ver=$(sed -n 's/^springGrpcVersion=//p' gradle.properties)
+          minor=$(echo "$ver" | cut -d. -f1,2)
+          echo "url-spring-grpc-docs=https://docs.spring.io/spring-grpc/reference/$minor" > linkcheck-attributes.properties
+          cat linkcheck-attributes.properties
       - name: Check docs links (advisory)
         id: linkcheck
         uses: othmaneataallah/spring-docs-link-check@v0.2
@@ -32,6 +41,7 @@ jobs:
           scope: ${{ inputs.scope || 'diff' }}
           base-ref: origin/main
           paths: 'documentation/**/*.adoc'
+          attributes-file: linkcheck-attributes.properties
           fail-on-error: 'false'
       - name: Upload link reports
         if: always()
