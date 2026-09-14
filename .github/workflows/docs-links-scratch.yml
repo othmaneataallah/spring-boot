@@ -1,0 +1,39 @@
+# SCRATCH / EXPERIMENTAL — fork-only test of spring-docs-link-check@v0.1.
+# Not intended for upstream. Validates wiring (diff on PR, full on demand)
+# as advisory-only: never blocks, uploads reports as artifacts.
+name: Docs Links (scratch)
+on:
+  pull_request:
+    paths: ['documentation/**/*.adoc']
+  workflow_dispatch:
+    inputs:
+      scope:
+        description: 'Link scope to check'
+        required: false
+        default: full
+        type: choice
+        options: [full, diff]
+permissions:
+  contents: read
+jobs:
+  docs-links:
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Check docs links (advisory)
+        id: linkcheck
+        uses: othmaneataallah/spring-docs-link-check@v0.1
+        with:
+          scope: ${{ inputs.scope || 'diff' }}
+          base-ref: origin/main
+          paths: 'documentation/**/*.adoc'
+          fail-on-error: 'false'
+      - name: Upload link reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: linkcheck-reports
+          path: linkcheck-reports/
