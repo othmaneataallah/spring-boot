@@ -3,8 +3,10 @@
 # as advisory-only: never blocks, uploads reports as artifacts.
 name: Docs Links (scratch)
 on:
+  push:
+    branches: ['docs-link-check-scratch']
   pull_request:
-    paths: ['documentation/**/*.adoc']
+    paths: ['documentation/**/*.adoc', '.github/workflows/docs-links-scratch.yml']
   workflow_dispatch:
     inputs:
       scope:
