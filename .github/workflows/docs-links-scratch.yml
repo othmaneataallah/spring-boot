@@ -7,6 +7,10 @@ on:
     branches: ['docs-link-check-scratch']
   pull_request:
     paths: ['documentation/**/*.adoc', '.github/workflows/docs-links-scratch.yml']
+  # Production shape: weekly full-corpus scan for rot (only runs on the
+  # default branch once merged; inert on feature branches).
+  schedule:
+    - cron: '0 6 * * 1'
   workflow_dispatch:
     inputs:
       scope:
