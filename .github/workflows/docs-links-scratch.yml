@@ -27,7 +27,7 @@ jobs:
           fetch-depth: 0
       - name: Check docs links (advisory)
         id: linkcheck
-        uses: othmaneataallah/spring-docs-link-check@v0.1
+        uses: othmaneataallah/spring-docs-link-check@v0.2
         with:
           scope: ${{ inputs.scope || 'diff' }}
           base-ref: origin/main
